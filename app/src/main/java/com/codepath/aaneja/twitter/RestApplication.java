@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate;
+package com.codepath.aaneja.twitter;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowLog;
@@ -12,7 +12,7 @@ import android.content.Context;
  * including the image cache in memory and on disk. This also adds a singleton
  * for accessing the relevant rest client.
  *
- *     RestClient client = RestApplication.getRestClient();
+ *     TwitterRestClient client = RestApplication.getRestClient();
  *     // use client to send requests to API
  *
  */
@@ -29,7 +29,7 @@ public class RestApplication extends Application {
 		RestApplication.context = this;
 	}
 
-	public static RestClient getRestClient() {
-		return (RestClient) RestClient.getInstance(RestClient.class, RestApplication.context);
+	public static TwitterRestClient getRestClient() {
+		return (TwitterRestClient) TwitterRestClient.getInstance(TwitterRestClient.class, RestApplication.context);
 	}
 }
