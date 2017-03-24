@@ -32,6 +32,26 @@ public class Tweet extends BaseModel {
     @Column
     String body;
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getUserHandle() {
+        return userHandle;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
     public Tweet() {
     }
 
