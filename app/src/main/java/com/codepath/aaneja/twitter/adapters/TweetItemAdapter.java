@@ -46,7 +46,7 @@ public class TweetItemAdapter extends
     }
 
     private Tweet getItemForPosition(int position) {
-        return new Tweet(new JSONObject());
+        return FetchedTweets.get(position);
     }
 
     @Override

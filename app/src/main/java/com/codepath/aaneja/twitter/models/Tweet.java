@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class Tweet extends BaseModel {
     // Define database columns and associated fields
     @PrimaryKey @Column
-    Long id;
+    String id;
     @Column
     String userId;
     @Column
@@ -32,16 +32,8 @@ public class Tweet extends BaseModel {
     @Column
     String body;
 
-    public Long getId() {
+    public String getId() {
         return id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getUserHandle() {
-        return userHandle;
     }
 
     public String getTimestamp() {
@@ -60,10 +52,11 @@ public class Tweet extends BaseModel {
         super();
 
         try {
-            this.userId = object.getString("user_id");
-            this.userHandle = object.getString("user_username");
-            this.timestamp = object.getString("timestamp");
-            this.body = object.getString("body");
+            this.id = object.getString("id_str");
+            this.userId = "todo"; //object.getString("id");
+            this.userHandle = "todoUserHandle";
+            this.timestamp = object.getString("created_at");
+            this.body = object.getString("text");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -82,7 +75,7 @@ public class Tweet extends BaseModel {
             }
 
             Tweet tweet = new Tweet(tweetJson);
-            tweet.save();
+            //tweet.save();
             tweets.add(tweet);
         }
 

@@ -11,7 +11,7 @@
     tools:context="com.codepath.aaneja.twitter.TimelineActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvArticles"
+        android:id="@+id/rvTweets"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </RelativeLayout>
