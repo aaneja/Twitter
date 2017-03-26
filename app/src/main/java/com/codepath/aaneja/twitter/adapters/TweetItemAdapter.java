@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.codepath.aaneja.twitter.databinding.ItemTweetBinding;
+import com.codepath.aaneja.twitter.helpers.Helpers;
 import com.codepath.aaneja.twitter.models.Tweet;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -34,7 +36,9 @@ public class TweetItemAdapter extends
 
         public void bind(Tweet tweet) {
             binding.tvTweetText.setText(tweet.getBody());
-            binding.tvTimeStamp.setText(tweet.getTimestamp());
+            binding.tvTimeStamp.setText(Helpers.getRelativeTimeAgo(tweet.getTimestamp()));
+            binding.tvUserInfo.setText(String.format("(%s) %s",tweet.getUserScreenName(),tweet.getUserName()));
+            Picasso.with(binding.ivProfile.getContext()).load(tweet.getUserProfileUrl()).fit().centerCrop().into(binding.ivProfile);
             binding.executePendingBindings();
         }
     }

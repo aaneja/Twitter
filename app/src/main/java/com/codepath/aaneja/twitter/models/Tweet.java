@@ -29,14 +29,30 @@ public class Tweet extends BaseModel {
     String id;
     @Column
     long longId;
+
+    public String getUserScreenName() {
+        return userScreenName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getUserProfileUrl() {
+        return userProfileUrl;
+    }
+
     @Column
-    String userId;
+    String userScreenName;
     @Column
-    String userHandle;
+    String userName;
+    @Column
+    String userProfileUrl;
     @Column
     String timestamp;
     @Column
     String body;
+
 
     public String getId() {
         return id;
@@ -63,10 +79,14 @@ public class Tweet extends BaseModel {
         try {
             this.longId =  object.getLong("id");
             this.id = object.getString("id_str");
-            this.userId = "todo"; //object.getString("id");
-            this.userHandle = "todoUserHandle";
             this.timestamp = object.getString("created_at");
             this.body = object.getString("text");
+
+            //First get the inner 'user' object
+            JSONObject user = object.getJSONObject("user");
+            this.userScreenName = user.getString("screen_name");
+            this.userName = user.getString("name");
+            this.userProfileUrl = user.getString("profile_image_url");
         } catch (JSONException e) {
             e.printStackTrace();
         }
