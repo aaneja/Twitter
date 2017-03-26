@@ -7,6 +7,7 @@ package com.codepath.aaneja.twitter.models;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import com.codepath.aaneja.twitter.MyDatabase;
 import com.raizlabs.android.dbflow.structure.BaseModel;
@@ -17,6 +18,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import java.util.ArrayList;
 
 
+@Parcel
 @Table(database = MyDatabase.class)
 public class Tweet extends BaseModel {
 

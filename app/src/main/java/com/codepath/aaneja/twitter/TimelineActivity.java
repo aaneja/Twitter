@@ -1,5 +1,6 @@
 package com.codepath.aaneja.twitter;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -7,12 +8,14 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.codepath.aaneja.twitter.adapters.TweetItemAdapter;
 import com.codepath.aaneja.twitter.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,18 +23,17 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+
 
 public class TimelineActivity extends AppCompatActivity {
 
+    private static final int REQUEST_CODE_COMPOSE = 1;
     private HashMap<Integer, Long> pageToMaxIdMap = new HashMap<>();
     private ArrayList<Tweet> fetchedTweets = new ArrayList<>();
     private TweetItemAdapter tweetItemAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-    private TwitterRestClient twitterClient;
-
-    public TimelineActivity() {
-        twitterClient = RestApplication.getRestClient();
-    }
+    private TwitterRestClient twitterClient = RestApplication.getRestClient();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -113,6 +115,18 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     public void onComposeAction(MenuItem item) {
+        Intent i = new Intent(TimelineActivity.this, ComposeTweetActivity.class);
+        i.putExtra("mode", 2); // pass arbitrary data to launched activity
+        startActivityForResult(i, REQUEST_CODE_COMPOSE);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // REQUEST_CODE is defined above
+       if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_COMPOSE) {
+            // Extract name value from result extras
+            Tweet newTweet = (Tweet) Parcels.unwrap(data.getExtras().getParcelable(ComposeTweetActivity.NEW_TWEET));
+            Log.d("NEWTWEET", "TimelineActivity/NewTweet/Id : " +newTweet.getId());
+        }
     }
 }
