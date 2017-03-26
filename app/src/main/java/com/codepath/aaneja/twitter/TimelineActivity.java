@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.codepath.aaneja.twitter.adapters.TweetItemAdapter;
 import com.codepath.aaneja.twitter.models.Tweet;
@@ -29,6 +31,13 @@ public class TimelineActivity extends AppCompatActivity {
 
     public TimelineActivity() {
         twitterClient = RestApplication.getRestClient();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_timeline, menu);
+        return true;
     }
 
     @Override
@@ -101,5 +110,9 @@ public class TimelineActivity extends AppCompatActivity {
             max_id = tweet.getLongId() <  max_id ? tweet.getLongId() : max_id;
         }
         return max_id;
+    }
+
+    public void onComposeAction(MenuItem item) {
+
     }
 }
