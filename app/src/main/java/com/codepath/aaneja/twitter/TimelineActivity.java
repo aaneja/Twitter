@@ -34,6 +34,7 @@ public class TimelineActivity extends AppCompatActivity {
     private TweetItemAdapter tweetItemAdapter;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private TwitterRestClient twitterClient = RestApplication.getRestClient();
+    private RecyclerView rvTweets;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -49,7 +50,7 @@ public class TimelineActivity extends AppCompatActivity {
 
 
         tweetItemAdapter = new TweetItemAdapter(fetchedTweets);
-        RecyclerView rvTweets =  (RecyclerView) findViewById(R.id.rvTweets);
+        rvTweets = (RecyclerView) findViewById(R.id.rvTweets);
         rvTweets.setAdapter(tweetItemAdapter);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         rvTweets.setLayoutManager(layoutManager);
@@ -60,12 +61,14 @@ public class TimelineActivity extends AppCompatActivity {
             public void onLoadMore(final int newPage, int totalItemsCount, RecyclerView view) {
                 Log.d("NEWTWEETS", "Requesting page:  "+ String.valueOf(newPage));
                 if (!pageToMaxIdMap.containsKey(newPage-1)) {
-                    //We don't have the max_id from the last page, something is wrong
-                    Log.d("NEWTWEETS/Exception", "No max_id mapping exists for page: " + String.valueOf(newPage-1));
+                    //We don't have the max_id from the last page, something is wrong.
+                    Log.e("NEWTWEETS/Exception", "No max_id mapping exists for page: " + String.valueOf(newPage-1) + "cannot fetch new page #:" +String.valueOf(newPage));
+                    return;
                 }
                 long prevMaxId = pageToMaxIdMap.get(newPage-1);
                 Log.d("NEWTWEETS", "Previous max_id: "+ String.valueOf(prevMaxId));
-                twitterClient.getHomeTimeline(prevMaxId+1, new JsonHttpResponseHandler() {
+                //We need older tweets, so we fetch tweets less than the min of the previously seen id's
+                twitterClient.getHomeTimeline(prevMaxId-1, new JsonHttpResponseHandler() {
                     public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
                         Log.d("NEWTWEETS/fetched", "count: " + jsonArray.length());
                         final ArrayList<Tweet> newTweets = Tweet.fromJson(jsonArray);
@@ -124,9 +127,20 @@ public class TimelineActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // REQUEST_CODE is defined above
        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_COMPOSE) {
-            // Extract name value from result extras
-            Tweet newTweet = (Tweet) Parcels.unwrap(data.getExtras().getParcelable(ComposeTweetActivity.NEW_TWEET));
-            Log.d("NEWTWEET", "TimelineActivity/NewTweet/Id : " +newTweet.getId());
+           // Extract name value from result extras
+           Tweet newTweet = (Tweet) Parcels.unwrap(data.getExtras().getParcelable(ComposeTweetActivity.NEW_TWEET));
+           Log.d("NEWTWEET", "TimelineActivity/NewTweet/Id : " +newTweet.getId());
+
+           //Add in the new item
+           fetchedTweets.add(0,newTweet);
+           //Now we can notify the adapter of the change
+           tweetItemAdapter.notifyItemInserted(0);
+           rvTweets.scrollToPosition(0);
+
+           //The act of adding a new item messes up state in the endlessRecyclerViewScrollListener. We reset its state and clear the dictionary that defines pages to max_id mappings
+           endlessRecyclerViewScrollListener.resetState();
+           pageToMaxIdMap.clear();
+           SetPageToMaxIdMapping(endlessRecyclerViewScrollListener.getCurrentPage(),fetchedTweets);
         }
     }
 }
