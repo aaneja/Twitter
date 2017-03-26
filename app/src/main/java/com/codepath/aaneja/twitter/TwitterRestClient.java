@@ -4,6 +4,7 @@ import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
 
 import android.content.Context;
+import android.databinding.tool.util.L;
 
 import com.codepath.oauth.OAuthAsyncHttpClient;
 import com.codepath.oauth.OAuthBaseClient;
@@ -33,25 +34,17 @@ public class TwitterRestClient extends OAuthBaseClient {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
 	}
 
-	// CHANGE THIS
-	// DEFINE METHODS for different API endpoints here
-	public void getInterestingnessList(AsyncHttpResponseHandler handler) {
-		String apiUrl = getApiUrl("?nojsoncallback=1&method=flickr.interestingness.getList");
-		// Can specify query string params directly or through RequestParams.
-		RequestParams params = new RequestParams();
-		params.put("format", "json");
-		client.get(apiUrl, params, handler);
-	}
-
 	@Override
 	protected OAuthAsyncHttpClient getClient() {
 		return super.getClient();
 	}
 
-	public void getHomeTimeline(int page, AsyncHttpResponseHandler handler) {
+	public void getHomeTimeline(long max_id, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/home_timeline.json");
 		RequestParams params = new RequestParams();
-		params.put("page", String.valueOf(page));
+		if(max_id > 0) {
+			params.put("max_id", String.valueOf(max_id));
+		}
 		getClient().get(apiUrl, params, handler);
 	}
 

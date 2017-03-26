@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import com.codepath.aaneja.twitter.MyDatabase;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 
@@ -20,9 +19,14 @@ import java.util.ArrayList;
 
 @Table(database = MyDatabase.class)
 public class Tweet extends BaseModel {
+
+
+
     // Define database columns and associated fields
-    @PrimaryKey @Column
+    @PrimaryKey
     String id;
+    @Column
+    long longId;
     @Column
     String userId;
     @Column
@@ -36,6 +40,9 @@ public class Tweet extends BaseModel {
         return id;
     }
 
+    public long getLongId() {
+        return longId;
+    }
     public String getTimestamp() {
         return timestamp;
     }
@@ -52,6 +59,7 @@ public class Tweet extends BaseModel {
         super();
 
         try {
+            this.longId =  object.getLong("id");
             this.id = object.getString("id_str");
             this.userId = "todo"; //object.getString("id");
             this.userHandle = "todoUserHandle";
