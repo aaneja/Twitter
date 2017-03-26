@@ -2,6 +2,6 @@
 <resources>
 
     <string name="app_name">YetAnotherTwitter</string>
-    <string name="login_label">Log in</string>
+    <string name="login_label">Log in to Twitter</string>
 
 </resources>

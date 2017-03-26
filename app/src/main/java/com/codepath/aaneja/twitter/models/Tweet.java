@@ -18,7 +18,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import java.util.ArrayList;
 
 
-@Parcel
+@Parcel(analyze={Tweet.class})
 @Table(database = MyDatabase.class)
 public class Tweet extends BaseModel {
 

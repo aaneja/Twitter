@@ -8,10 +8,11 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.codepath.aaneja.twitter.adapters.EndlessRecyclerViewScrollListener;
 import com.codepath.aaneja.twitter.adapters.TweetItemAdapter;
 import com.codepath.aaneja.twitter.models.Tweet;
+import com.codepath.aaneja.twitter.network.TwitterRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -22,8 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 
 public class TimelineActivity extends AppCompatActivity {

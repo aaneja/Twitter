@@ -5,8 +5,8 @@ android {
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        applicationId "com.codepath.apps.restclienttemplate"
-        minSdkVersion 16
+        applicationId "com.codepath.aaneja.yetanothertwitter"
+        minSdkVersion 21
         targetSdkVersion 25
     }
 

@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.codepath.aaneja.twitter.databinding.ActivityComposeTweetBinding;
 import com.codepath.aaneja.twitter.models.Tweet;
+import com.codepath.aaneja.twitter.network.TwitterRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONObject;

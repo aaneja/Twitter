@@ -1,5 +1,6 @@
 package com.codepath.aaneja.twitter;
 
+import com.codepath.aaneja.twitter.network.TwitterRestClient;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowLog;
 import com.raizlabs.android.dbflow.config.FlowManager;

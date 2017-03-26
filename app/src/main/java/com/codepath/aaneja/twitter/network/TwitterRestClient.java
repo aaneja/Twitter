@@ -1,4 +1,4 @@
-package com.codepath.aaneja.twitter;
+package com.codepath.aaneja.twitter.network;
 
 import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
