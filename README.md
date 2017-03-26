@@ -45,15 +45,14 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] List anything else that you can get done to improve the app functionality!
+* [x] Used android data binding in RecyclerView/ViewHolder
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+![YetAnotherTwitter](/YetAnotherTwitter.mp4.gif?raw=true "Yet another twitter app")
 
-GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
