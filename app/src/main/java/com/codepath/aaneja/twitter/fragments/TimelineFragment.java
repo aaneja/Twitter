@@ -30,7 +30,8 @@ import cz.msebera.android.httpclient.Header;
 
 public class TimelineFragment extends Fragment {
 
-    private final TwitterRestClient.API apiToSet            ;
+    private static final String APITOSET = "APITOSET";
+    private TwitterRestClient.API apiToSet;
     private OnFragmentInteractionListener mListener;
 
     private static final int REQUEST_CODE_COMPOSE = 1;
@@ -41,38 +42,24 @@ public class TimelineFragment extends Fragment {
     private TwitterRestClient twitterClient = RestApplication.getRestClient();
     private RecyclerView rvTweets;
 
-
-    public TimelineFragment(TwitterRestClient.API apiToSet) {
-        this.apiToSet = apiToSet;
-        // Required empty public constructor
+    public TimelineFragment() {
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment TimelineFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    /*public static TimelineFragment newInstance(String param1, String param2) {
+    public static TimelineFragment newInstance(TwitterRestClient.API apiToSet) {
         TimelineFragment fragment = new TimelineFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable(APITOSET, apiToSet);
         fragment.setArguments(args);
         return fragment;
-    }*/
+    }
 
-    /*@Override
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            apiToSet = (TwitterRestClient.API) getArguments().getSerializable(APITOSET);
         }
-    }*/
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

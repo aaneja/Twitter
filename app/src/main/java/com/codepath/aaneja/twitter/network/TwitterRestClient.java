@@ -11,6 +11,8 @@ import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import java.io.Serializable;
+
 /*
  * 
  * This is the object responsible for communicating with a REST API. 
@@ -27,8 +29,8 @@ public class TwitterRestClient extends OAuthBaseClient{
 	public static final Class<? extends Api> REST_API_CLASS  = TwitterApi.class;
 	public static final String REST_URL = "https://api.twitter.com/1.1";
 	public static final String REST_CONSUMER_KEY = "O51FU4ZRFnExF6vAx7Djd0Nqm";
-	public static final String REST_CONSUMER_SECRET = "92yMwa7DNtG1wifUaJk7WKDnsjr49Vr8b6NvJgDkatccmWKyfn"; // Change this
-	public static final String REST_CALLBACK_URL = "oauth://fooTwitter"; //scheme changed from 'oauth' to 'http'
+	public static final String REST_CONSUMER_SECRET = "92yMwa7DNtG1wifUaJk7WKDnsjr49Vr8b6NvJgDkatccmWKyfn";
+	public static final String REST_CALLBACK_URL = "oauth://fooTwitter";
 
 	public TwitterRestClient(Context context) {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
@@ -62,7 +64,7 @@ public class TwitterRestClient extends OAuthBaseClient{
 		getClient().post(apiUrl, params, handler);
 	}
 
-	public enum API {
+	public enum API implements Serializable {
         HOME_TIMELINE,
         MENTIONS
     }
