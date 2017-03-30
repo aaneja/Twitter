@@ -5,30 +5,13 @@ import android.net.Uri;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.codepath.aaneja.twitter.adapters.EndlessRecyclerViewScrollListener;
-import com.codepath.aaneja.twitter.adapters.TweetItemAdapter;
 import com.codepath.aaneja.twitter.fragments.TimelineFragment;
-import com.codepath.aaneja.twitter.models.Tweet;
-import com.codepath.aaneja.twitter.network.TwitterRestClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.json.JSONArray;
-import org.parceler.Parcels;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import cz.msebera.android.httpclient.Header;
 
 
-public class TimelineActivity extends AppCompatActivity implements TimelineFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements TimelineFragment.OnFragmentInteractionListener {
 
     private static final int REQUEST_CODE_COMPOSE = 1;
 
@@ -42,7 +25,7 @@ public class TimelineActivity extends AppCompatActivity implements TimelineFragm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timeline);
+        setContentView(R.layout.activity_main);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.phTimeline, new TimelineFragment());
@@ -50,7 +33,7 @@ public class TimelineActivity extends AppCompatActivity implements TimelineFragm
     }
 
     public void onComposeAction(MenuItem item) {
-        Intent i = new Intent(TimelineActivity.this, ComposeTweetActivity.class);
+        Intent i = new Intent(MainActivity.this, ComposeTweetActivity.class);
         startActivityForResult(i, REQUEST_CODE_COMPOSE);
     }
 
@@ -60,7 +43,7 @@ public class TimelineActivity extends AppCompatActivity implements TimelineFragm
        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_COMPOSE) {
            /*// Extract name value from result extras
            Tweet newTweet = (Tweet) Parcels.unwrap(data.getExtras().getParcelable(ComposeTweetActivity.NEW_TWEET));
-           Log.d("NEWTWEET", "TimelineActivity/NewTweet/Id : " +newTweet.getId());
+           Log.d("NEWTWEET", "MainActivity/NewTweet/Id : " +newTweet.getId());
 
            //Add in the new item
            fetchedTweets.add(0,newTweet);
