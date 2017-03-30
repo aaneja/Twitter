@@ -4,9 +4,8 @@ import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
 
 import android.content.Context;
-import android.net.Uri;
+import android.util.Log;
 
-import com.codepath.aaneja.twitter.fragments.TimelineFragment;
 import com.codepath.oauth.OAuthAsyncHttpClient;
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -40,9 +39,16 @@ public class TwitterRestClient extends OAuthBaseClient{
 		return super.getClient();
 	}
 
-	public void getHomeTimeline(long max_id, AsyncHttpResponseHandler handler) {
-		String apiUrl = getApiUrl("statuses/home_timeline.json");
-		RequestParams params = new RequestParams();
+	public void getTimeLine(long max_id, API apiToUse, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("statuses/home_timeline.json");
+        switch (apiToUse) {
+            case HOME_TIMELINE:
+                break;
+            case MENTIONS:
+                apiUrl = getApiUrl("statuses/mentions_timeline.json");
+        }
+        Log.d("TwitterRestClient", "getTimeLine: " + apiUrl);
+        RequestParams params = new RequestParams();
 		if(max_id > 0) {
 			params.put("max_id", String.valueOf(max_id));
 		}
@@ -55,6 +61,11 @@ public class TwitterRestClient extends OAuthBaseClient{
 		params.put("status", body);
 		getClient().post(apiUrl, params, handler);
 	}
+
+	public enum API {
+        HOME_TIMELINE,
+        MENTIONS
+    }
 
 
 

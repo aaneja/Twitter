@@ -30,6 +30,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class TimelineFragment extends Fragment {
 
+    private final TwitterRestClient.API apiToSet            ;
     private OnFragmentInteractionListener mListener;
 
     private static final int REQUEST_CODE_COMPOSE = 1;
@@ -41,7 +42,8 @@ public class TimelineFragment extends Fragment {
     private RecyclerView rvTweets;
 
 
-    public TimelineFragment() {
+    public TimelineFragment(TwitterRestClient.API apiToSet) {
+        this.apiToSet = apiToSet;
         // Required empty public constructor
     }
 
@@ -99,7 +101,7 @@ public class TimelineFragment extends Fragment {
                 long prevMaxId = pageToMaxIdMap.get(newPage-1);
                 Log.d("NEWTWEETS", "Previous max_id: "+ String.valueOf(prevMaxId));
                 //We need older tweets, so we fetch tweets less than the min of the previously seen id's
-                twitterClient.getHomeTimeline(prevMaxId-1, new JsonHttpResponseHandler() {
+                twitterClient.getTimeLine(prevMaxId-1, apiToSet , new JsonHttpResponseHandler() {
                     public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
                         Log.d("NEWTWEETS/fetched", "count: " + jsonArray.length());
                         final ArrayList<Tweet> newTweets = Tweet.fromJson(jsonArray);
@@ -115,7 +117,7 @@ public class TimelineFragment extends Fragment {
         };
         rvTweets.addOnScrollListener(endlessRecyclerViewScrollListener);
 
-        twitterClient.getHomeTimeline(-1, new JsonHttpResponseHandler() {
+        twitterClient.getTimeLine(-1, apiToSet , new JsonHttpResponseHandler() {
             public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
                 Log.d("DEBUG", "timeline: " + jsonArray.toString());
                 final ArrayList<Tweet> newTweets = Tweet.fromJson(jsonArray);
@@ -171,6 +173,9 @@ public class TimelineFragment extends Fragment {
 
 
     private void SetPageToMaxIdMapping(int currentPage, List<Tweet> newTweets) {
+        if(newTweets.size() == 0) {
+            Log.w("NEWTWEETS", "No new tweets fetched. No mapping will be set for: " + String.valueOf(currentPage));
+        }
         long max_id = getMaxId(newTweets);
         Log.d("NEWTWEETS", "SetPageToMaxIdMapping: (" + String.valueOf(currentPage) +"," +String.valueOf(max_id) +")");
         pageToMaxIdMap.put(currentPage,max_id);
@@ -178,6 +183,9 @@ public class TimelineFragment extends Fragment {
 
     //Get the smalled id from a List of Tweets; this is used to fetch older tweets from a timeline
     private long getMaxId(List<Tweet> tweets) {
+        if(tweets.size() == 0) {
+            return -1;
+        }
         long max_id = tweets.get(0).getLongId();
         for (Tweet tweet :
                 tweets) {

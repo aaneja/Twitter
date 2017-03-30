@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.codepath.aaneja.twitter.fragments.TimelineFragment;
+import com.codepath.aaneja.twitter.network.TwitterRestClient;
 
 
 public class MainActivity extends AppCompatActivity implements TimelineFragment.OnFragmentInteractionListener {
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements TimelineFragment.
         setContentView(R.layout.activity_main);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.phTimeline, new TimelineFragment());
+        ft.replace(R.id.phTimeline, new TimelineFragment(TwitterRestClient.API.MENTIONS));
         ft.commit();
     }
 
