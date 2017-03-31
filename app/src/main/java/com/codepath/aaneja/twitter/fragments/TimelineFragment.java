@@ -31,6 +31,8 @@ import cz.msebera.android.httpclient.Header;
 public class TimelineFragment extends Fragment {
 
     private static final String APITOSET = "APITOSET";
+    private static final String USERIDTOGET = "USERIDTOGET";
+    private String userIdToFetch = "";
     private TwitterRestClient.API apiToSet;
     private OnFragmentInteractionListener mListener;
 
@@ -45,10 +47,11 @@ public class TimelineFragment extends Fragment {
     public TimelineFragment() {
     }
 
-    public static TimelineFragment newInstance(TwitterRestClient.API apiToSet) {
+    public static TimelineFragment newInstance(TwitterRestClient.API apiToSet, String userIdToGet) {
         TimelineFragment fragment = new TimelineFragment();
         Bundle args = new Bundle();
         args.putSerializable(APITOSET, apiToSet);
+        args.putString(USERIDTOGET,userIdToGet);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,6 +61,8 @@ public class TimelineFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             apiToSet = (TwitterRestClient.API) getArguments().getSerializable(APITOSET);
+            userIdToFetch = getArguments().getString(USERIDTOGET);
+            Log.d("NEW_FRAGMENT","apiToSet: "+String.valueOf(apiToSet)+" userIdToFetch: "+ userIdToFetch);
         }
     }
 
@@ -88,7 +93,7 @@ public class TimelineFragment extends Fragment {
                 long prevMaxId = pageToMaxIdMap.get(newPage-1);
                 Log.d("NEWTWEETS", "Previous max_id: "+ String.valueOf(prevMaxId));
                 //We need older tweets, so we fetch tweets less than the min of the previously seen id's
-                twitterClient.getTimeLine(prevMaxId-1, apiToSet , new JsonHttpResponseHandler() {
+                twitterClient.getTimeLine(prevMaxId-1, apiToSet, userIdToFetch, new JsonHttpResponseHandler() {
                     public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
                         Log.d("NEWTWEETS/fetched", "count: " + jsonArray.length());
                         final ArrayList<Tweet> newTweets = Tweet.fromJson(jsonArray);
@@ -104,7 +109,7 @@ public class TimelineFragment extends Fragment {
         };
         rvTweets.addOnScrollListener(endlessRecyclerViewScrollListener);
 
-        twitterClient.getTimeLine(-1, apiToSet , new JsonHttpResponseHandler() {
+        twitterClient.getTimeLine(-1, apiToSet, userIdToFetch, new JsonHttpResponseHandler() {
             public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
                 Log.d("DEBUG", "timeline: " + jsonArray.toString());
                 final ArrayList<Tweet> newTweets = Tweet.fromJson(jsonArray);

@@ -41,19 +41,27 @@ public class TwitterRestClient extends OAuthBaseClient{
 		return super.getClient();
 	}
 
-	public void getTimeLine(long max_id, API apiToUse, AsyncHttpResponseHandler handler) {
+	public void getTimeLine(long max_id, API apiToUse, String userIdForTimeline, AsyncHttpResponseHandler handler) {
+
+        RequestParams params = new RequestParams();
+        if(max_id > 0) {
+            params.put("max_id", String.valueOf(max_id));
+        }
+
         String apiUrl = getApiUrl("statuses/home_timeline.json");
         switch (apiToUse) {
             case HOME_TIMELINE:
                 break;
             case MENTIONS:
-                apiUrl = getApiUrl("statuses/mentions_timeline.json");
+				apiUrl = getApiUrl("statuses/mentions_timeline.json");
+				break;
+            case USER_TIMELINE:
+                apiUrl = getApiUrl("statuses/user_timeline.json");
+                params.put("screen_name",userIdForTimeline);
+                break;
         }
         Log.d("TwitterRestClient", "getTimeLine: " + apiUrl);
-        RequestParams params = new RequestParams();
-		if(max_id > 0) {
-			params.put("max_id", String.valueOf(max_id));
-		}
+
 		getClient().get(apiUrl, params, handler);
 	}
 
@@ -66,7 +74,8 @@ public class TwitterRestClient extends OAuthBaseClient{
 
 	public enum API implements Serializable {
         HOME_TIMELINE,
-        MENTIONS
+        MENTIONS,
+        USER_TIMELINE
     }
 
 

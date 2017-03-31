@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements TimelineFragment.
         setContentView(R.layout.activity_main);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.phTimeline, TimelineFragment.newInstance(TwitterRestClient.API.HOME_TIMELINE));
+        ft.replace(R.id.phTimeline, TimelineFragment.newInstance(TwitterRestClient.API.USER_TIMELINE,"YawnOkPlease"));
         ft.commit();
     }
 
