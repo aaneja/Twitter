@@ -1,5 +1,7 @@
 package com.codepath.aaneja.twitter.network;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
 
@@ -9,11 +11,16 @@ import android.util.Log;
 import com.codepath.oauth.OAuthAsyncHttpClient;
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import java.io.Serializable;
 
-import static com.codepath.aaneja.twitter.models.Tweet_Table.body;
+import cz.msebera.android.httpclient.Header;
+
+import static java.lang.Long.getLong;
+
+//import static com.codepath.aaneja.twitter.models.Tweet_Table.body;
 
 /*
  * 
@@ -77,11 +84,35 @@ public class TwitterRestClient extends OAuthBaseClient{
 	}
 
 	public void getUser(long userId, AsyncHttpResponseHandler handler) {
+		if(userId == 0) {
+			getLoggedInUser(handler);
+			return;
+		}
+
+		Log.i("TwitterRestClient","Getting user timeline for : "+userId);
 		String apiUrl = getApiUrl("users/show.json");
 		RequestParams params = new RequestParams();
 		params.put("user_id", userId);
 		params.put("include_entites", false);
 		getClient().get(apiUrl, params, handler);
+	}
+
+	private void getLoggedInUser(final AsyncHttpResponseHandler handler)
+	{
+		String apiUrl = getApiUrl("account/verify_credentials.json");
+		getClient().get(apiUrl, new JsonHttpResponseHandler(){
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+				try {
+					long userId = response.getLong("id");
+					Log.i("TwitterRestClient","getLoggedInUser resolved user_id to :"+userId);
+					getUser(userId,handler);
+				}
+				catch (JSONException e){
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 	public enum API implements Serializable {

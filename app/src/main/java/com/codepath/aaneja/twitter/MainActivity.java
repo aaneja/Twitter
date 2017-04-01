@@ -96,7 +96,8 @@ public class MainActivity extends AppCompatActivity implements TimelineFragment.
     }
 
     public void onProfileAction(MenuItem item) {
-        Intent i = new Intent(MainActivity.this, ComposeTweetActivity.class);
+        Intent i = new Intent(MainActivity.this, ProfileActivity.class);
+        i.putExtra(ProfileActivity.USERINFO,(long)0);
         startActivity(i);
     }
 

@@ -21,18 +21,13 @@ import java.util.ArrayList;
 @Parcel(analyze={Tweet.class})
 @Table(database = MyDatabase.class)
 public class Tweet extends BaseModel {
+    User user;
+
     @PrimaryKey
     String id;
     @Column
     long longId;
 
-
-    @Column
-    String userScreenName;
-    @Column
-    String userName;
-    @Column
-    String userProfileUrl;
     @Column
     String timestamp;
     @Column
@@ -41,15 +36,15 @@ public class Tweet extends BaseModel {
 
 
     public String getUserScreenName() {
-        return userScreenName;
+        return user.getUserScreenName();
     }
 
     public String getUserName() {
-        return userName;
+        return user.getUserName();
     }
 
     public String getUserProfileUrl() {
-        return userProfileUrl;
+        return user.getUserProfileUrl();
     }
 
     public String getId() {
@@ -80,12 +75,7 @@ public class Tweet extends BaseModel {
             this.id = object.getString("id_str");
             this.timestamp = object.getString("created_at");
             this.body = object.getString("text");
-
-            //First get the inner 'user' object
-            JSONObject user = object.getJSONObject("user");
-            this.userScreenName = user.getString("screen_name");
-            this.userName = user.getString("name");
-            this.userProfileUrl = user.getString("profile_image_url");
+            user = new User(object.getJSONObject("user"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
