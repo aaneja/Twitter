@@ -1,6 +1,7 @@
 package com.codepath.aaneja.twitter.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,10 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.codepath.aaneja.twitter.MainActivity;
+import com.codepath.aaneja.twitter.ProfileActivity;
 import com.codepath.aaneja.twitter.R;
 import com.codepath.aaneja.twitter.RestApplication;
 import com.codepath.aaneja.twitter.adapters.EndlessRecyclerViewScrollListener;
 import com.codepath.aaneja.twitter.adapters.TweetItemAdapter;
+import com.codepath.aaneja.twitter.helpers.ItemClickSupport;
 import com.codepath.aaneja.twitter.models.Tweet;
 import com.codepath.aaneja.twitter.network.TwitterRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -28,10 +32,14 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
+import static android.media.CamcorderProfile.get;
+import static com.codepath.aaneja.twitter.helpers.ItemClickSupport.addTo;
+
 public class TimelineFragment extends Fragment {
 
     private static final String APITOSET = "APITOSET";
     private static final String USERIDTOGET = "USERIDTOGET";
+    private static final String PROFILELOADSWITCH = "PROFILELOADSWITCH";
     private long userIdToFetch = 0;
     private TwitterRestClient.API apiToSet;
     private OnFragmentInteractionListener mListener;
@@ -43,15 +51,17 @@ public class TimelineFragment extends Fragment {
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private TwitterRestClient twitterClient = RestApplication.getRestClient();
     private RecyclerView rvTweets;
+    private boolean addLoadProfileOnItemClick = true;
 
     public TimelineFragment() {
     }
 
-    public static TimelineFragment newInstance(TwitterRestClient.API apiToSet, long userIdToGet) {
+    public static TimelineFragment newInstance(TwitterRestClient.API apiToSet, long userIdToGet, boolean addLoadProfileOnItemClick) {
         TimelineFragment fragment = new TimelineFragment();
         Bundle args = new Bundle();
         args.putSerializable(APITOSET, apiToSet);
         args.putLong(USERIDTOGET,userIdToGet);
+        args.putBoolean(PROFILELOADSWITCH,addLoadProfileOnItemClick);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,7 +72,8 @@ public class TimelineFragment extends Fragment {
         if (getArguments() != null) {
             apiToSet = (TwitterRestClient.API) getArguments().getSerializable(APITOSET);
             userIdToFetch = getArguments().getLong(USERIDTOGET);
-            Log.d("NEW_FRAGMENT","apiToSet: "+String.valueOf(apiToSet)+" userIdToFetch: "+ userIdToFetch);
+            addLoadProfileOnItemClick = getArguments().getBoolean(PROFILELOADSWITCH);
+            Log.d("NEW_FRAGMENT","apiToSet: "+String.valueOf(apiToSet)+" userIdToFetch: "+ userIdToFetch+ " addLoadProfileOnItemClick: "+addLoadProfileOnItemClick);
         }
     }
 
@@ -80,6 +91,20 @@ public class TimelineFragment extends Fragment {
         rvTweets.setAdapter(tweetItemAdapter);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         rvTweets.setLayoutManager(layoutManager);
+
+        if(addLoadProfileOnItemClick) {
+            ItemClickSupport.addTo(rvTweets).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+                @Override
+                public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                    Tweet tweet = fetchedTweets.get(position);
+                    long userIdForProfileLoad = tweet.getUser().getUserId();
+                    Intent i = new Intent(TimelineFragment.this.getContext(), ProfileActivity.class);
+                    i.putExtra(ProfileActivity.USERINFO, userIdForProfileLoad);
+                    startActivity(i);
+                }
+            });
+        }
+
 
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override

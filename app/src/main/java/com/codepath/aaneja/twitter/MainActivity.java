@@ -49,27 +49,6 @@ public class MainActivity extends AppCompatActivity implements TimelineFragment.
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.phTimeline, TimelineFragment.newInstance(TwitterRestClient.API.USER_TIMELINE,"YawnOkPlease"));
-        ft.commit();*/
-        //viewPager.setCurrentItem(0);
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                Toast.makeText(MainActivity.this, "Selected tab with Name: " + tab.getText(), Toast.LENGTH_SHORT).show();
-
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
     }
 
     public void onComposeAction(MenuItem item) {
@@ -111,8 +90,8 @@ public class MainActivity extends AppCompatActivity implements TimelineFragment.
         public ViewPagerHomeAdapter(FragmentManager fm) {
             super(fm);
             fragmentManager = fm;
-            homeTimeline = TimelineFragment.newInstance(TwitterRestClient.API.HOME_TIMELINE,0);
-            mentionsTimeline = TimelineFragment.newInstance(TwitterRestClient.API.MENTIONS, 0);
+            homeTimeline = TimelineFragment.newInstance(TwitterRestClient.API.HOME_TIMELINE,0,true);
+            mentionsTimeline = TimelineFragment.newInstance(TwitterRestClient.API.MENTIONS, 0,true);
         }
 
         @Override

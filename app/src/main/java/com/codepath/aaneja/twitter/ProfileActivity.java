@@ -45,7 +45,7 @@ public class ProfileActivity extends AppCompatActivity implements TimelineFragme
 
                 //And replace the Frame with the user's timeline
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.profile_frUserTimeline, TimelineFragment.newInstance(TwitterRestClient.API.USER_TIMELINE, userIdToFetch));
+                ft.replace(R.id.profile_frUserTimeline, TimelineFragment.newInstance(TwitterRestClient.API.USER_TIMELINE, userIdToFetch,false));
                 ft.commit();
             }
 

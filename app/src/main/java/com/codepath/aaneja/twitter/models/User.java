@@ -12,6 +12,8 @@ import org.parceler.Parcel;
 
 @Parcel(analyze={User.class})
 public class User {
+
+    long userId;
     @Column
     String screenName;
     @Column
@@ -23,6 +25,10 @@ public class User {
     int followersCount;
     @Column
     int followingCount;
+
+    public long getUserId() {
+        return userId;
+    }
 
     public String getScreenName() {
         return screenName;
@@ -51,6 +57,7 @@ public class User {
         super();
 
         try {
+            this.userId = user.getLong("id");
             this.screenName = user.getString("screen_name");
             this.fullName = user.getString("name");
             this.profileImageUrl = user.getString("profile_image_url");
