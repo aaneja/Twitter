@@ -21,26 +21,11 @@ import java.util.ArrayList;
 @Parcel(analyze={Tweet.class})
 @Table(database = MyDatabase.class)
 public class Tweet extends BaseModel {
-
-
-
-    // Define database columns and associated fields
     @PrimaryKey
     String id;
     @Column
     long longId;
 
-    public String getUserScreenName() {
-        return userScreenName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getUserProfileUrl() {
-        return userProfileUrl;
-    }
 
     @Column
     String userScreenName;
@@ -54,6 +39,19 @@ public class Tweet extends BaseModel {
     String body;
 
 
+
+    public String getUserScreenName() {
+        return userScreenName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getUserProfileUrl() {
+        return userProfileUrl;
+    }
+
     public String getId() {
         return id;
     }
@@ -61,6 +59,7 @@ public class Tweet extends BaseModel {
     public long getLongId() {
         return longId;
     }
+
     public String getTimestamp() {
         return timestamp;
     }

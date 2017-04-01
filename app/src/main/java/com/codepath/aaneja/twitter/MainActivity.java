@@ -10,17 +10,26 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.codepath.aaneja.twitter.fragments.TimelineFragment;
+import com.codepath.aaneja.twitter.models.Tweet;
 import com.codepath.aaneja.twitter.network.TwitterRestClient;
+
+import org.parceler.Parcels;
+
+import static com.codepath.aaneja.twitter.R.id.rvTweets;
 
 
 public class MainActivity extends AppCompatActivity implements TimelineFragment.OnFragmentInteractionListener {
 
     private static final int REQUEST_CODE_COMPOSE = 1;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
+    private ViewPagerHomeAdapter viewPagerAdapter;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -35,11 +44,12 @@ public class MainActivity extends AppCompatActivity implements TimelineFragment.
         setContentView(R.layout.activity_main);
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
-        ViewPager viewPager = (ViewPager) findViewById(R.id.vpPager);
-        viewPager.setAdapter(new ViewPagerHomeAdapter(getSupportFragmentManager()));
+        viewPager = (ViewPager) findViewById(R.id.vpPager);
+        viewPagerAdapter = new ViewPagerHomeAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(viewPagerAdapter);
 
         // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
 
         /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -74,20 +84,12 @@ public class MainActivity extends AppCompatActivity implements TimelineFragment.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // REQUEST_CODE is defined above
        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_COMPOSE) {
-           /*// Extract name value from result extras
+           // Extract name value from result extras
            Tweet newTweet = (Tweet) Parcels.unwrap(data.getExtras().getParcelable(ComposeTweetActivity.NEW_TWEET));
            Log.d("NEWTWEET", "MainActivity/NewTweet/Id : " +newTweet.getId());
 
-           //Add in the new item
-           fetchedTweets.add(0,newTweet);
-           //Now we can notify the adapter of the change
-           tweetItemAdapter.notifyItemInserted(0);
-           rvTweets.scrollToPosition(0);
-
-           //The act of adding a new item messes up state in the endlessRecyclerViewScrollListener. We reset its state and clear the dictionary that defines pages to max_id mappings
-           endlessRecyclerViewScrollListener.resetState();
-           pageToMaxIdMap.clear();
-           SetPageToMaxIdMapping(endlessRecyclerViewScrollListener.getCurrentPage(),fetchedTweets);*/
+           ((TimelineFragment)viewPagerAdapter.getItem(0)).newTweetPosted(newTweet);
+           viewPager.setCurrentItem(0); //navigate back to the home timeline
         }
     }
 
@@ -100,19 +102,23 @@ public class MainActivity extends AppCompatActivity implements TimelineFragment.
 
         private static int NUM_ITEMS = 2;
         private final FragmentManager fragmentManager;
+        private TimelineFragment homeTimeline;
+        private TimelineFragment mentionsTimeline;
 
         public ViewPagerHomeAdapter(FragmentManager fm) {
             super(fm);
             fragmentManager = fm;
+            homeTimeline = TimelineFragment.newInstance(TwitterRestClient.API.HOME_TIMELINE,0);
+            mentionsTimeline = TimelineFragment.newInstance(TwitterRestClient.API.MENTIONS, 0);
         }
 
         @Override
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return TimelineFragment.newInstance(TwitterRestClient.API.HOME_TIMELINE,"");
+                    return homeTimeline;
                 case 1:
-                    return TimelineFragment.newInstance(TwitterRestClient.API.MENTIONS,"");
+                    return mentionsTimeline;
                 default:
                     return null;
             }

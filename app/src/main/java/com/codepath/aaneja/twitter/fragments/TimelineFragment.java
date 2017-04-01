@@ -32,7 +32,7 @@ public class TimelineFragment extends Fragment {
 
     private static final String APITOSET = "APITOSET";
     private static final String USERIDTOGET = "USERIDTOGET";
-    private String userIdToFetch = "";
+    private long userIdToFetch = 0;
     private TwitterRestClient.API apiToSet;
     private OnFragmentInteractionListener mListener;
 
@@ -47,11 +47,11 @@ public class TimelineFragment extends Fragment {
     public TimelineFragment() {
     }
 
-    public static TimelineFragment newInstance(TwitterRestClient.API apiToSet, String userIdToGet) {
+    public static TimelineFragment newInstance(TwitterRestClient.API apiToSet, long userIdToGet) {
         TimelineFragment fragment = new TimelineFragment();
         Bundle args = new Bundle();
         args.putSerializable(APITOSET, apiToSet);
-        args.putString(USERIDTOGET,userIdToGet);
+        args.putLong(USERIDTOGET,userIdToGet);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,7 +61,7 @@ public class TimelineFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             apiToSet = (TwitterRestClient.API) getArguments().getSerializable(APITOSET);
-            userIdToFetch = getArguments().getString(USERIDTOGET);
+            userIdToFetch = getArguments().getLong(USERIDTOGET);
             Log.d("NEW_FRAGMENT","apiToSet: "+String.valueOf(apiToSet)+" userIdToFetch: "+ userIdToFetch);
         }
     }
@@ -124,11 +124,18 @@ public class TimelineFragment extends Fragment {
         });
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+
+    public void newTweetPosted(Tweet newTweet) {
+        //Add in the new item
+        fetchedTweets.add(0,newTweet);
+        //Now we can notify the adapter of the change
+        tweetItemAdapter.notifyItemInserted(0);
+        rvTweets.scrollToPosition(0);
+
+        //The act of adding a new item messes up state in the endlessRecyclerViewScrollListener. We reset its state and clear the dictionary that defines pages to max_id mappings
+        endlessRecyclerViewScrollListener.resetState();
+        pageToMaxIdMap.clear();
+        SetPageToMaxIdMapping(endlessRecyclerViewScrollListener.getCurrentPage(),fetchedTweets);
     }
 
     @Override

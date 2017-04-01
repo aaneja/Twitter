@@ -13,6 +13,8 @@ import com.loopj.android.http.RequestParams;
 
 import java.io.Serializable;
 
+import static com.codepath.aaneja.twitter.models.Tweet_Table.body;
+
 /*
  * 
  * This is the object responsible for communicating with a REST API. 
@@ -41,7 +43,7 @@ public class TwitterRestClient extends OAuthBaseClient{
 		return super.getClient();
 	}
 
-	public void getTimeLine(long max_id, API apiToUse, String userIdForTimeline, AsyncHttpResponseHandler handler) {
+	public void getTimeLine(long max_id, API apiToUse, long userId, AsyncHttpResponseHandler handler) {
 
         RequestParams params = new RequestParams();
         if(max_id > 0) {
@@ -57,7 +59,9 @@ public class TwitterRestClient extends OAuthBaseClient{
 				break;
             case USER_TIMELINE:
                 apiUrl = getApiUrl("statuses/user_timeline.json");
-                params.put("screen_name",userIdForTimeline);
+				if(userId != 0) {
+					params.put("user_id", userId);
+				}
                 break;
         }
         Log.d("TwitterRestClient", "getTimeLine: " + apiUrl);
@@ -72,20 +76,17 @@ public class TwitterRestClient extends OAuthBaseClient{
 		getClient().post(apiUrl, params, handler);
 	}
 
+	public void getUser(long userId, AsyncHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("users/show.json");
+		RequestParams params = new RequestParams();
+		params.put("user_id", userId);
+		params.put("include_entites", false);
+		getClient().get(apiUrl, params, handler);
+	}
+
 	public enum API implements Serializable {
         HOME_TIMELINE,
         MENTIONS,
         USER_TIMELINE
     }
-
-
-
-	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
-	 * 	  i.e getApiUrl("statuses/home_timeline.json");
-	 * 2. Define the parameters to pass to the request (query or body)
-	 *    i.e RequestParams params = new RequestParams("foo", "bar");
-	 * 3. Define the request method and make a call to the client
-	 *    i.e client.get(apiUrl, params, handler);
-	 *    i.e client.post(apiUrl, params, handler);
-	 */
 }
