@@ -21,6 +21,8 @@ import java.util.ArrayList;
 @Parcel(analyze={Tweet.class})
 @Table(database = MyDatabase.class)
 public class Tweet extends BaseModel {
+
+
     User user;
 
     @PrimaryKey
@@ -34,17 +36,8 @@ public class Tweet extends BaseModel {
     String body;
 
 
-
-    public String getUserScreenName() {
-        return user.getUserScreenName();
-    }
-
-    public String getUserName() {
-        return user.getUserName();
-    }
-
-    public String getUserProfileUrl() {
-        return user.getUserProfileUrl();
+    public User getUser() {
+        return user;
     }
 
     public String getId() {

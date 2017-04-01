@@ -13,22 +13,35 @@ import org.parceler.Parcel;
 @Parcel(analyze={User.class})
 public class User {
     @Column
-    String userScreenName;
+    String screenName;
     @Column
-    String userName;
+    String fullName;
     @Column
-    String userProfileUrl;
+    String profileImageUrl;
 
-    public String getUserScreenName() {
-        return userScreenName;
+    @Column
+    int followersCount;
+    @Column
+    int followingCount;
+
+    public String getScreenName() {
+        return screenName;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getFullName() {
+        return fullName;
     }
 
-    public String getUserProfileUrl() {
-        return userProfileUrl;
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public int getFollowersCount() {
+        return followersCount;
+    }
+
+    public int getFollowingCount() {
+        return followingCount;
     }
 
     public User() {
@@ -38,9 +51,11 @@ public class User {
         super();
 
         try {
-            this.userScreenName = user.getString("screen_name");
-            this.userName = user.getString("name");
-            this.userProfileUrl = user.getString("profile_image_url");
+            this.screenName = user.getString("screen_name");
+            this.fullName = user.getString("name");
+            this.profileImageUrl = user.getString("profile_image_url");
+            this.followersCount = user.getInt("followers_count");
+            this.followingCount = user.getInt("friends_count");
         } catch (JSONException e) {
             e.printStackTrace();
         }

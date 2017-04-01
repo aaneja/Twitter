@@ -37,8 +37,8 @@ public class TweetItemAdapter extends
         public void bind(Tweet tweet) {
             binding.tvTweetText.setText(tweet.getBody());
             binding.tvTimeStamp.setText(Helpers.getRelativeTimeAgo(tweet.getTimestamp()));
-            binding.tvUserInfo.setText(String.format("(%s) %s",tweet.getUserScreenName(),tweet.getUserName()));
-            Picasso.with(binding.ivProfile.getContext()).load(tweet.getUserProfileUrl()).fit().centerCrop().into(binding.ivProfile);
+            binding.tvUserInfo.setText(String.format("(%s) %s",tweet.getUser().getScreenName(),tweet.getUser().getFullName()));
+            Picasso.with(binding.ivProfile.getContext()).load(tweet.getUser().getProfileImageUrl()).fit().centerCrop().into(binding.ivProfile);
             binding.executePendingBindings();
         }
     }

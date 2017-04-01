@@ -8,7 +8,6 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.codepath.aaneja.twitter.R;
 import com.codepath.aaneja.twitter.fragments.TimelineFragment;
 import com.codepath.aaneja.twitter.models.User;
 import com.codepath.aaneja.twitter.network.TwitterRestClient;
@@ -37,10 +36,12 @@ public class ProfileActivity extends AppCompatActivity implements TimelineFragme
                 Log.d("ProfileActivity", "Fetched details for userId : "+ userIdToFetch);
 
                 User user = new User(response);
-                ((TextView)findViewById(R.id.profile_tvScreenName)).setText(user.getUserScreenName());
-                ((TextView)findViewById(R.id.profile_tvName)).setText(user.getUserName());
+                ((TextView)findViewById(R.id.profile_tvScreenName)).setText(user.getScreenName());
+                ((TextView)findViewById(R.id.profile_tvName)).setText(user.getFullName());
+                ((TextView)findViewById(R.id.tvFollowersCount)).setText(String.valueOf(user.getFollowersCount()));
+                ((TextView)findViewById(R.id.tvFollowingCount)).setText(String.valueOf(user.getFollowingCount()));
                 ImageView ivProfile = (ImageView)findViewById(R.id.profile_ivProfile);
-                Picasso.with(ivProfile.getContext()).load(user.getUserProfileUrl()).fit().centerCrop().into(ivProfile);
+                Picasso.with(ivProfile.getContext()).load(user.getProfileImageUrl()).fit().centerCrop().into(ivProfile);
 
                 //And replace the Frame with the user's timeline
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
