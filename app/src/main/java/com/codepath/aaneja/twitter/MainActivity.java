@@ -21,9 +21,6 @@ import com.codepath.aaneja.twitter.network.TwitterRestClient;
 
 import org.parceler.Parcels;
 
-import static com.codepath.aaneja.twitter.R.id.rvTweets;
-
-
 public class MainActivity extends AppCompatActivity implements TimelineFragment.OnFragmentInteractionListener {
 
     private static final int REQUEST_CODE_COMPOSE = 1;
@@ -98,6 +95,11 @@ public class MainActivity extends AppCompatActivity implements TimelineFragment.
 
     }
 
+    public void onProfileAction(MenuItem item) {
+        Intent i = new Intent(MainActivity.this, ComposeTweetActivity.class);
+        startActivity(i);
+    }
+
     public static class ViewPagerHomeAdapter extends FragmentPagerAdapter {
 
         private static int NUM_ITEMS = 2;
@@ -132,12 +134,12 @@ public class MainActivity extends AppCompatActivity implements TimelineFragment.
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
-            case 0: // Fragment # 0 - This will show FirstFragment
-            return "HOME";
-            case 1: // Fragment # 0 - This will show FirstFragment different title
-            return "MENTIONS";
+            case 0:
+                return "HOME";
+            case 1:
+                return "MENTIONS";
             default:
-            return null;
+                return null;
             }
         }
     }
