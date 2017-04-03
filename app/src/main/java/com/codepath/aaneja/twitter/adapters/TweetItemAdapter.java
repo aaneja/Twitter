@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide;
 import com.codepath.aaneja.twitter.databinding.ItemTweetBinding;
 import com.codepath.aaneja.twitter.helpers.Helpers;
 import com.codepath.aaneja.twitter.models.Tweet;
+import com.codepath.aaneja.twitter.network.TwitterRestClient;
 
 import java.util.List;
 
@@ -35,8 +36,8 @@ public class TweetItemAdapter extends
         public void bind(Tweet tweet) {
             binding.tvTweetText.setText(tweet.getBody());
             binding.tvTimeStamp.setText(Helpers.getRelativeTimeAgo(tweet.getTimestamp()));
-            binding.tvUserInfo.setText(String.format("(%s) %s",tweet.getUser().getScreenName(),tweet.getUser().getFullName()));
-            Glide.with(binding.ivProfile.getContext()).load(tweet.getUser().getProfileImageUrl()).centerCrop().into(binding.ivProfile);
+            binding.tvUserInfo.setText(String.format("(@%s) %s",tweet.getUser().getScreenName(),tweet.getUser().getFullName()));
+            Glide.with(binding.ivProfile.getContext()).load(TwitterRestClient.GetImageVariantUrl(tweet.getUser().getProfileImageUrl(),"")).into(binding.ivProfile);
             binding.executePendingBindings();
         }
     }

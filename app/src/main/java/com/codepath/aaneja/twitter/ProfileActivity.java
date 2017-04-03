@@ -36,12 +36,12 @@ public class ProfileActivity extends AppCompatActivity {
                 Log.d("ProfileActivity", "Fetched details for userId : "+ userIdToFetch);
 
                 User user = new User(response);
-                ((TextView)findViewById(R.id.profile_tvScreenName)).setText(user.getScreenName());
+                ((TextView)findViewById(R.id.profile_tvScreenName)).setText(String.format("@%s",user.getScreenName()));
                 ((TextView)findViewById(R.id.profile_tvName)).setText(user.getFullName());
                 ((TextView)findViewById(R.id.tvFollowersCount)).setText(String.valueOf(user.getFollowersCount()));
                 ((TextView)findViewById(R.id.tvFollowingCount)).setText(String.valueOf(user.getFollowingCount()));
                 ImageView ivProfile = (ImageView)findViewById(R.id.profile_ivProfile);
-                Glide.with(ivProfile.getContext()).load(user.getProfileImageUrl()).centerCrop().into(ivProfile);
+                Glide.with(ivProfile.getContext()).load(TwitterRestClient.GetImageVariantUrl(user.getProfileImageUrl(),"")).into(ivProfile);
 
                 //And replace the Frame with the user's timeline
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

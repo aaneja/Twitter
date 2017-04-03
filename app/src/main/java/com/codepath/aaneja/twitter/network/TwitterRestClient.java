@@ -1,15 +1,8 @@
 package com.codepath.aaneja.twitter.network;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.scribe.builder.api.Api;
-import org.scribe.builder.api.TwitterApi;
-
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.codepath.aaneja.twitter.LoginActivity;
 import com.codepath.aaneja.twitter.helpers.NetworkInfo;
 import com.codepath.oauth.OAuthAsyncHttpClient;
 import com.codepath.oauth.OAuthBaseClient;
@@ -17,11 +10,14 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.scribe.builder.api.Api;
+import org.scribe.builder.api.TwitterApi;
+
 import java.io.Serializable;
 
 import cz.msebera.android.httpclient.Header;
-
-import static java.lang.Long.getLong;
 
 //import static com.codepath.aaneja.twitter.models.Tweet_Table.body;
 
@@ -100,6 +96,27 @@ public class TwitterRestClient extends OAuthBaseClient{
 		params.put("include_entites", false);
 		getClient().get(apiUrl, params, handler);
 	}
+
+
+    /**
+     * @param url The original url
+     * @param variant Variant must have be one of '_bigger', '_mini', '_normal' or ''
+     * @return New image url
+     */
+    public static String GetImageVariantUrl(String url, String variant) {
+        final int lastSlash = url.lastIndexOf("/");
+        String imgPart = url.substring(lastSlash+1);
+        Log.v("GetImageVariant", "ImgPart : "+imgPart);
+
+        final int marker1 = imgPart.lastIndexOf("_");
+        final int marker2 = imgPart.lastIndexOf(".");
+        final String newImgPart = imgPart.substring(0,marker1) + variant + imgPart.substring(marker2);
+
+        Log.v("GetImageVariant","newImgPart: "+newImgPart);
+        final String newUrl = url.substring(0, lastSlash) + "/" + newImgPart;
+        Log.v("GetImageVariant","newUrl: "+newUrl);
+        return newUrl;
+    }
 
 	private void getLoggedInUser(final AsyncHttpResponseHandler handler)
 	{

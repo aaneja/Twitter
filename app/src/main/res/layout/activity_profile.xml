@@ -13,7 +13,9 @@
     <ImageView
         android:id="@+id/profile_ivProfile"
         android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"/>
 
