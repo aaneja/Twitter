@@ -9,8 +9,6 @@ import com.codepath.aaneja.twitter.helpers.Helpers;
 import com.codepath.aaneja.twitter.models.Tweet;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONObject;
-
 import java.util.List;
 
 /**

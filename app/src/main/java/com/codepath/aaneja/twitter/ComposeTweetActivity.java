@@ -26,11 +26,10 @@ public class ComposeTweetActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
          binding =  DataBindingUtil.setContentView(this, R.layout.activity_compose_tweet);
-//        setContentView(R.layout.activity_compose_tweet);
     }
 
     public void onCancelClick(View view) {
-        setResult(RESULT_CANCELED); // set result code and bundle data for response
+        setResult(RESULT_CANCELED);
         finish();
     }
 
@@ -43,13 +42,10 @@ public class ComposeTweetActivity extends AppCompatActivity {
                 final Tweet postedTweet = new Tweet(response);
                 Log.d("POSTTWEET","New tweet id:" + postedTweet.getId());
 
-                // Prepare data intent
                 Intent data = new Intent();
-                // Pass relevant data back as a result
                 data.putExtra(NEW_TWEET, Parcels.wrap(postedTweet));
-                // Activity finished ok, return the data
-                setResult(RESULT_OK, data); // set result code and bundle data for response
-                finish(); // closes the activity, pass data to parent
+                setResult(RESULT_OK, data);
+                finish();
             }
         } );
 

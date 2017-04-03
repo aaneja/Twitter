@@ -21,7 +21,7 @@ import com.codepath.aaneja.twitter.network.TwitterRestClient;
 
 import org.parceler.Parcels;
 
-public class MainActivity extends AppCompatActivity implements TimelineFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_COMPOSE = 1;
     private ViewPager viewPager;
@@ -67,11 +67,6 @@ public class MainActivity extends AppCompatActivity implements TimelineFragment.
            ((TimelineFragment)viewPagerAdapter.getItem(0)).newTweetPosted(newTweet);
            viewPager.setCurrentItem(0); //navigate back to the home timeline
         }
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 
     public void onProfileAction(MenuItem item) {

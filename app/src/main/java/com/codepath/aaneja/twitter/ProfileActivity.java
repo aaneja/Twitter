@@ -18,7 +18,7 @@ import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
 
-public class ProfileActivity extends AppCompatActivity implements TimelineFragment.OnFragmentInteractionListener {
+public class ProfileActivity extends AppCompatActivity {
 
     public static final String USERINFO = "USERINFO";
     private TwitterRestClient twitterClient = RestApplication.getRestClient();
@@ -56,10 +56,5 @@ public class ProfileActivity extends AppCompatActivity implements TimelineFragme
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
         });
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 }

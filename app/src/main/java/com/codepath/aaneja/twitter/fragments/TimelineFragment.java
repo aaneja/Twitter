@@ -1,8 +1,6 @@
 package com.codepath.aaneja.twitter.fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.codepath.aaneja.twitter.MainActivity;
 import com.codepath.aaneja.twitter.ProfileActivity;
 import com.codepath.aaneja.twitter.R;
 import com.codepath.aaneja.twitter.RestApplication;
@@ -33,7 +30,6 @@ import java.util.List;
 import cz.msebera.android.httpclient.Header;
 
 import static android.media.CamcorderProfile.get;
-import static com.codepath.aaneja.twitter.helpers.ItemClickSupport.addTo;
 
 public class TimelineFragment extends Fragment {
 
@@ -42,7 +38,6 @@ public class TimelineFragment extends Fragment {
     private static final String PROFILELOADSWITCH = "PROFILELOADSWITCH";
     private long userIdToFetch = 0;
     private TwitterRestClient.API apiToSet;
-    private OnFragmentInteractionListener mListener;
 
     private static final int REQUEST_CODE_COMPOSE = 1;
     private HashMap<Integer, Long> pageToMaxIdMap = new HashMap<>();
@@ -51,17 +46,23 @@ public class TimelineFragment extends Fragment {
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private TwitterRestClient twitterClient = RestApplication.getRestClient();
     private RecyclerView rvTweets;
-    private boolean addLoadProfileOnItemClick = true;
+    private boolean loadProfileOnItemClick = true;
 
     public TimelineFragment() {
     }
 
-    public static TimelineFragment newInstance(TwitterRestClient.API apiToSet, long userIdToGet, boolean addLoadProfileOnItemClick) {
+    /**
+     * @param apiToSet The @TwitterRestClient.API to call using this fragment
+     * @param userIdToGet The user_id of the twitter user to fetch. Can be 0 to represent the currently logged in user
+     * @param loadProfileOnItemClick A flag to control if the ProfileActivity should be called on clicking the item in the displayed Timeline
+     * @return
+     */
+    public static TimelineFragment newInstance(TwitterRestClient.API apiToSet, long userIdToGet, boolean loadProfileOnItemClick) {
         TimelineFragment fragment = new TimelineFragment();
         Bundle args = new Bundle();
         args.putSerializable(APITOSET, apiToSet);
         args.putLong(USERIDTOGET,userIdToGet);
-        args.putBoolean(PROFILELOADSWITCH,addLoadProfileOnItemClick);
+        args.putBoolean(PROFILELOADSWITCH,loadProfileOnItemClick);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,15 +73,14 @@ public class TimelineFragment extends Fragment {
         if (getArguments() != null) {
             apiToSet = (TwitterRestClient.API) getArguments().getSerializable(APITOSET);
             userIdToFetch = getArguments().getLong(USERIDTOGET);
-            addLoadProfileOnItemClick = getArguments().getBoolean(PROFILELOADSWITCH);
-            Log.d("NEW_FRAGMENT","apiToSet: "+String.valueOf(apiToSet)+" userIdToFetch: "+ userIdToFetch+ " addLoadProfileOnItemClick: "+addLoadProfileOnItemClick);
+            loadProfileOnItemClick = getArguments().getBoolean(PROFILELOADSWITCH);
+            Log.d("NEW_FRAGMENT","apiToSet: "+String.valueOf(apiToSet)+" userIdToFetch: "+ userIdToFetch+ " loadProfileOnItemClick: "+ loadProfileOnItemClick);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_timeline, container, false);
     }
 
@@ -92,7 +92,7 @@ public class TimelineFragment extends Fragment {
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         rvTweets.setLayoutManager(layoutManager);
 
-        if(addLoadProfileOnItemClick) {
+        if(loadProfileOnItemClick) {
             ItemClickSupport.addTo(rvTweets).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                 @Override
                 public void onItemClicked(RecyclerView recyclerView, int position, View v) {
@@ -117,34 +117,27 @@ public class TimelineFragment extends Fragment {
                 }
                 long prevMaxId = pageToMaxIdMap.get(newPage-1);
                 Log.d("NEWTWEETS", "Previous max_id: "+ String.valueOf(prevMaxId));
-                //We need older tweets, so we fetch tweets less than the min of the previously seen id's
-                twitterClient.getTimeLine(prevMaxId-1, apiToSet, userIdToFetch, new JsonHttpResponseHandler() {
-                    public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
-                        Log.d("NEWTWEETS/fetched", "count: " + jsonArray.length());
-                        final ArrayList<Tweet> newTweets = Tweet.fromJson(jsonArray);
-                        SetPageToMaxIdMapping(newPage, newTweets);
 
-                        //Since this is a new load ensure we only notify new range
-                        final int beforeAddCount = fetchedTweets.size();
-                        fetchedTweets.addAll(newTweets);
-                        tweetItemAdapter.notifyItemRangeInserted(beforeAddCount,newTweets.size());
-                    }
-                });
+                FetchNextPageofTweets(newPage, prevMaxId);
             }
         };
         rvTweets.addOnScrollListener(endlessRecyclerViewScrollListener);
 
-        twitterClient.getTimeLine(-1, apiToSet, userIdToFetch, new JsonHttpResponseHandler() {
+        FetchNextPageofTweets(endlessRecyclerViewScrollListener.getCurrentPage(),0);
+    }
+
+    private void FetchNextPageofTweets(final int newPageToFetch, final long prevPageMinId) {
+        //We need older tweets, so we fetch tweets less than the min of the previously seen id's
+        twitterClient.getTimeLine(prevPageMinId -1, apiToSet, userIdToFetch, new JsonHttpResponseHandler() {
             public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
-                Log.d("DEBUG", "timeline: " + jsonArray.toString());
+                Log.d("NEWTWEETS/fetched", "count: " + jsonArray.length());
                 final ArrayList<Tweet> newTweets = Tweet.fromJson(jsonArray);
+                SetPageToMaxIdMapping(newPageToFetch, newTweets);
 
-                SetPageToMaxIdMapping(endlessRecyclerViewScrollListener.getCurrentPage(), newTweets);
-
-                //Since first load of the timeline, clear and full notify
-                fetchedTweets.clear();
+                //Since this is a new load ensure we only notify new range
+                final int beforeAddCount = fetchedTweets.size();
                 fetchedTweets.addAll(newTweets);
-                tweetItemAdapter.notifyDataSetChanged();
+                tweetItemAdapter.notifyItemRangeInserted(beforeAddCount,newTweets.size());
             }
         });
     }
@@ -162,39 +155,6 @@ public class TimelineFragment extends Fragment {
         pageToMaxIdMap.clear();
         SetPageToMaxIdMapping(endlessRecyclerViewScrollListener.getCurrentPage(),fetchedTweets);
     }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
 
     private void SetPageToMaxIdMapping(int currentPage, List<Tweet> newTweets) {
         if(newTweets.size() == 0) {
