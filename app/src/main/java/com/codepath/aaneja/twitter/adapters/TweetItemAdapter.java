@@ -4,10 +4,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.codepath.aaneja.twitter.databinding.ItemTweetBinding;
 import com.codepath.aaneja.twitter.helpers.Helpers;
 import com.codepath.aaneja.twitter.models.Tweet;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class TweetItemAdapter extends
             binding.tvTweetText.setText(tweet.getBody());
             binding.tvTimeStamp.setText(Helpers.getRelativeTimeAgo(tweet.getTimestamp()));
             binding.tvUserInfo.setText(String.format("(%s) %s",tweet.getUser().getScreenName(),tweet.getUser().getFullName()));
-            Picasso.with(binding.ivProfile.getContext()).load(tweet.getUser().getProfileImageUrl()).fit().centerCrop().into(binding.ivProfile);
+            Glide.with(binding.ivProfile.getContext()).load(tweet.getUser().getProfileImageUrl()).centerCrop().into(binding.ivProfile);
             binding.executePendingBindings();
         }
     }

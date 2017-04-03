@@ -1,19 +1,18 @@
 package com.codepath.aaneja.twitter;
 
-import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.codepath.aaneja.twitter.fragments.TimelineFragment;
 import com.codepath.aaneja.twitter.models.User;
 import com.codepath.aaneja.twitter.network.TwitterRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -42,7 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
                 ((TextView)findViewById(R.id.tvFollowersCount)).setText(String.valueOf(user.getFollowersCount()));
                 ((TextView)findViewById(R.id.tvFollowingCount)).setText(String.valueOf(user.getFollowingCount()));
                 ImageView ivProfile = (ImageView)findViewById(R.id.profile_ivProfile);
-                Picasso.with(ivProfile.getContext()).load(user.getProfileImageUrl()).fit().centerCrop().into(ivProfile);
+                Glide.with(ivProfile.getContext()).load(user.getProfileImageUrl()).centerCrop().into(ivProfile);
 
                 //And replace the Frame with the user's timeline
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

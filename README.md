@@ -54,7 +54,7 @@ Describe any challenges encountered while building the app.
 ## Open-source libraries used
 
 - [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
-- [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
+- [Glide](http://guides.codepath.com/android/Displaying-Images-with-the-Glide-Library) - Image loading and caching library for Android
 
 ## License
 
