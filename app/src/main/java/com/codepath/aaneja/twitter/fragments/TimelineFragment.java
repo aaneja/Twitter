@@ -10,7 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.codepath.aaneja.twitter.ComposeTweetActivity;
 import com.codepath.aaneja.twitter.ProfileActivity;
 import com.codepath.aaneja.twitter.R;
 import com.codepath.aaneja.twitter.RestApplication;
@@ -22,6 +24,7 @@ import com.codepath.aaneja.twitter.network.TwitterRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -129,6 +132,7 @@ public class TimelineFragment extends Fragment {
     private void FetchNextPageofTweets(final int newPageToFetch, final long prevPageMinId) {
         //We need older tweets, so we fetch tweets less than the min of the previously seen id's
         twitterClient.getTimeLine(prevPageMinId -1, apiToSet, userIdToFetch, new JsonHttpResponseHandler() {
+            @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
                 Log.d("NEWTWEETS/fetched", "count: " + jsonArray.length());
                 final ArrayList<Tweet> newTweets = Tweet.fromJson(jsonArray);
@@ -138,6 +142,12 @@ public class TimelineFragment extends Fragment {
                 final int beforeAddCount = fetchedTweets.size();
                 fetchedTweets.addAll(newTweets);
                 tweetItemAdapter.notifyItemRangeInserted(beforeAddCount,newTweets.size());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Toast.makeText(TimelineFragment.this.getContext(),String.format("Error getting tweets for Page: %d, StatusCode : %d, ExceptionText: %s",newPageToFetch, statusCode,throwable.getMessage()),Toast.LENGTH_LONG);
+                super.onFailure(statusCode, headers, throwable, errorResponse);
             }
         });
     }

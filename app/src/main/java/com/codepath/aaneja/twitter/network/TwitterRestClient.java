@@ -7,7 +7,10 @@ import org.scribe.builder.api.TwitterApi;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.codepath.aaneja.twitter.LoginActivity;
+import com.codepath.aaneja.twitter.helpers.NetworkInfo;
 import com.codepath.oauth.OAuthAsyncHttpClient;
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -28,6 +31,8 @@ public class TwitterRestClient extends OAuthBaseClient{
 	public static final String REST_CONSUMER_KEY = "O51FU4ZRFnExF6vAx7Djd0Nqm";
 	public static final String REST_CONSUMER_SECRET = "92yMwa7DNtG1wifUaJk7WKDnsjr49Vr8b6NvJgDkatccmWKyfn";
 	public static final String REST_CALLBACK_URL = "oauth://fooTwitter";
+	private static final Header[] EMPTY_HEADERS = {};
+	private static final byte[] EMPTY_BYTES = {};
 
 	public TwitterRestClient(Context context) {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
@@ -39,6 +44,9 @@ public class TwitterRestClient extends OAuthBaseClient{
 	}
 
 	public void getTimeLine(long max_id, API apiToUse, long userId, AsyncHttpResponseHandler handler) {
+		if(!CheckInternet(handler)){
+			return;
+		}
 
         RequestParams params = new RequestParams();
         if(max_id > 0) {
@@ -65,6 +73,10 @@ public class TwitterRestClient extends OAuthBaseClient{
 	}
 
 	public void postTweet(String body, AsyncHttpResponseHandler handler) {
+		if(!CheckInternet(handler)){
+			return;
+		}
+
 		String apiUrl = getApiUrl("statuses/update.json");
 		RequestParams params = new RequestParams();
 		params.put("status", body);
@@ -72,6 +84,10 @@ public class TwitterRestClient extends OAuthBaseClient{
 	}
 
 	public void getUser(long userId, AsyncHttpResponseHandler handler) {
+		if(!CheckInternet(handler)){
+			return;
+		}
+
 		if(userId == 0) {
 			getLoggedInUser(handler);
 			return;
@@ -87,6 +103,10 @@ public class TwitterRestClient extends OAuthBaseClient{
 
 	private void getLoggedInUser(final AsyncHttpResponseHandler handler)
 	{
+		if(!CheckInternet(handler)){
+			return;
+		}
+
 		String apiUrl = getApiUrl("account/verify_credentials.json");
 		getClient().get(apiUrl, new JsonHttpResponseHandler(){
 			@Override
@@ -101,6 +121,14 @@ public class TwitterRestClient extends OAuthBaseClient{
 				}
 			}
 		});
+	}
+
+	private boolean CheckInternet(final AsyncHttpResponseHandler handler) {
+		if(!NetworkInfo.isOnline()) {
+			handler.onFailure(-1,EMPTY_HEADERS, EMPTY_BYTES, new Exception("No internet available"));
+			return false;
+		}
+		return true;
 	}
 
 	public enum API implements Serializable {

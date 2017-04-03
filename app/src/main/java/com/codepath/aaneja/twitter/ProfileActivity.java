@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codepath.aaneja.twitter.fragments.TimelineFragment;
 import com.codepath.aaneja.twitter.models.User;
@@ -51,8 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.e("ProfileActivity", "Failure statusCode : "+statusCode);
-                Log.e("ProfileActivity", "Failure JSON: "+ errorResponse.toString());
+                Toast.makeText(ProfileActivity.this,String.format("Error getting user info : StatusCode : %d, ExceptionText: %s",statusCode,throwable.getMessage()),Toast.LENGTH_LONG);
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
         });
