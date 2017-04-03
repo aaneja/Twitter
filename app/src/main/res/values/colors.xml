@@ -3,4 +3,6 @@
     <color name="twitterBlue">#0084b4</color>
     <color name="primary">#0084b4</color>
     <color name="primary_dark">#0084b5</color>
+    <color name="black">#000000</color>
+    <color name="contrastPink">#946699</color>
 </resources>

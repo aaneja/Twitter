@@ -4,16 +4,16 @@ package com.codepath.aaneja.twitter.models;
  * Created by aaneja on 23/03/17.
  */
 
+import com.codepath.aaneja.twitter.MyDatabase;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
-
-import com.codepath.aaneja.twitter.MyDatabase;
-import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
 
 import java.util.ArrayList;
 
@@ -23,36 +23,22 @@ import java.util.ArrayList;
 public class Tweet extends BaseModel {
 
 
+    User user;
 
-    // Define database columns and associated fields
     @PrimaryKey
     String id;
     @Column
     long longId;
 
-    public String getUserScreenName() {
-        return userScreenName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getUserProfileUrl() {
-        return userProfileUrl;
-    }
-
-    @Column
-    String userScreenName;
-    @Column
-    String userName;
-    @Column
-    String userProfileUrl;
     @Column
     String timestamp;
     @Column
     String body;
 
+
+    public User getUser() {
+        return user;
+    }
 
     public String getId() {
         return id;
@@ -61,6 +47,7 @@ public class Tweet extends BaseModel {
     public long getLongId() {
         return longId;
     }
+
     public String getTimestamp() {
         return timestamp;
     }
@@ -81,12 +68,7 @@ public class Tweet extends BaseModel {
             this.id = object.getString("id_str");
             this.timestamp = object.getString("created_at");
             this.body = object.getString("text");
-
-            //First get the inner 'user' object
-            JSONObject user = object.getJSONObject("user");
-            this.userScreenName = user.getString("screen_name");
-            this.userName = user.getString("name");
-            this.userProfileUrl = user.getString("profile_image_url");
+            user = new User(object.getJSONObject("user"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

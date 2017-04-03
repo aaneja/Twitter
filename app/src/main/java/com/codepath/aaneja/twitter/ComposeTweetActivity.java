@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.codepath.aaneja.twitter.databinding.ActivityComposeTweetBinding;
 import com.codepath.aaneja.twitter.models.Tweet;
@@ -26,11 +27,10 @@ public class ComposeTweetActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
          binding =  DataBindingUtil.setContentView(this, R.layout.activity_compose_tweet);
-//        setContentView(R.layout.activity_compose_tweet);
     }
 
     public void onCancelClick(View view) {
-        setResult(RESULT_CANCELED); // set result code and bundle data for response
+        setResult(RESULT_CANCELED);
         finish();
     }
 
@@ -43,13 +43,16 @@ public class ComposeTweetActivity extends AppCompatActivity {
                 final Tweet postedTweet = new Tweet(response);
                 Log.d("POSTTWEET","New tweet id:" + postedTweet.getId());
 
-                // Prepare data intent
                 Intent data = new Intent();
-                // Pass relevant data back as a result
                 data.putExtra(NEW_TWEET, Parcels.wrap(postedTweet));
-                // Activity finished ok, return the data
-                setResult(RESULT_OK, data); // set result code and bundle data for response
-                finish(); // closes the activity, pass data to parent
+                setResult(RESULT_OK, data);
+                finish();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Toast.makeText(ComposeTweetActivity.this,String.format("Error posting tweet : StatusCode : %d, ExceptionText: %s",statusCode,throwable.getMessage()),Toast.LENGTH_LONG);
+                super.onFailure(statusCode, headers, throwable, errorResponse);
             }
         } );
 
