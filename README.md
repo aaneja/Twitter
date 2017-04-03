@@ -44,7 +44,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-![YetAnotherTwitter](/YetAnotherTwitter-Updated.mp4.gif?raw=true "Yet another twitter app")
+![YetAnotherTwitter](/YetAnotherTwitter-2.mp4.gif?raw=true "Yet another twitter app")
 
 
 ## Notes
